@@ -111,3 +111,73 @@ console.log('obj1:',obj1)
 console.log('obj2:',obj2)
 
 // 2-5
+type UseStateUpdateArgument<T> = T | ((oldValue: T) => T);
+declare function useState<T>(
+    initialValue: T
+): [T, (updator: UseStateUpdateArgument<T>) => void];
+// const [numState, setNumState] = useState(0);
+
+// setNumState(3);
+// setNumState(state => state + 10);
+
+// 3-1
+function mapFromArray<T, K extends keyof T>(arr: T[], key: K): Map<T[K], T> {
+    const result = new Map();
+    for (const obj of arr) {
+        result.set(obj[key], obj);
+    }
+    return result;
+}
+
+const data = [
+    {id: 1, name:"John Smith"},
+    {id: 2, name:"Mary Sue"},
+    {id: 100, name:"Taro Yamada"},
+];
+
+const dataMap = mapFromArray(data, "id");
+
+// 3-2
+type MyPartial<T> = {
+    [P in keyof T]? : T[P];
+}
+
+type T1 = MyPartial<{
+    foo: number;
+    bar: string;
+}>;
+
+type T2 = MyPartial<{
+    hoge: {
+        piyo: number;
+    };
+}>;
+
+// 3-3
+interface EventPayloads {
+    start: {
+        user: string;
+    };
+    stop: {
+        user: string;
+        after: number;
+    };
+    end: {};
+}
+
+class EventDischarger<E> {
+    emit<Ev extends keyof E>(eventName: Ev, payload: E[Ev]) {
+        // promise
+        console.log(payload)
+    }
+}
+
+const ed = new EventDischarger<EventPayloads>();
+ed.emit("start", {
+    user: "user1"
+});
+ed.emit("stop", {
+    user: "user1",
+    after: 3
+});
+ed.emit("end", {});
