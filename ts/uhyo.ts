@@ -168,7 +168,7 @@ interface EventPayloads {
 class EventDischarger<E> {
     emit<Ev extends keyof E>(eventName: Ev, payload: E[Ev]) {
         // promise
-        console.log(payload)
+        console.log('emit:',payload)
     }
 }
 
@@ -181,3 +181,66 @@ ed.emit("stop", {
     after: 3
 });
 ed.emit("end", {});
+
+// 3-4
+// const increment = () => ({
+//     type: "increment",
+//     amount: Number,
+// }) 
+
+// const descrement = () => ({
+//     type: "descrement",
+//     amount: Number,
+// }) 
+
+// const reset = () => ({
+//     type: "reset",
+//     value: Number,
+// }) 
+
+// type Actions = (
+//     | ReturnType<typeof increment>
+//     | ReturnType<typeof descrement>
+//     | ReturnType<typeof reset>
+// );
+
+type Actions =
+    | {
+        type: "increment";
+        amount: number;
+    }
+    | {
+        type: "decrement";
+        amount: number;
+    }
+    | {
+        type: "reset";
+        value: number;
+    };
+
+const reducer = (state: number, action: Actions) => {
+    switch (action.type) {
+        case "increment":
+            return state + action.amount;
+        case "decrement":
+            return state - action.amount;
+        case "reset":
+            return action.value;
+    }
+};
+
+console.log('reducer:',reducer(100, {
+    type: "increment",
+    amount: 10,
+}))
+reducer(100, {
+    type: "decrement",
+    amount: 55,
+})
+reducer(0, {
+    type: "reset",
+    value: 0,
+})
+
+// 3-5
+type Func<A, R>  = (arg: A | undefined) => R;
