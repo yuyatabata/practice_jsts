@@ -243,4 +243,60 @@ reducer(0, {
 })
 
 // 3-5
-type Func<A, R>  = (arg: A | undefined) => R;
+type Func<A, R>  = undefined extends A ? (arg?: A) => R : (arg: A) => R;
+
+type TConditionalSample<T> = T extends string? 'string': 'other';
+
+// 4-1
+function getFoo<T extends object>(
+    obj: T
+): T extends { foo: infer E } ? E: unknown {
+    return (obj as any).foo;
+}
+
+const num = getFoo({
+    foo: 123
+});
+
+const str = getFoo({
+    foo: "string",
+    bar: 0
+});
+
+const unk = getFoo({
+    foo: true
+});
+
+// error
+getFoo(123)
+
+// practice infer
+class Book {
+    constructor(
+        public code: number,
+        public name: string,
+    ) {}
+}
+
+class Ticket {
+    constructor(
+        public code: string,
+        public name: string,
+    ) {}
+}
+
+type Code<T> = T extends { code: infer U } ? U : never;
+// ---> Code<T> は number | string と同じ
+
+type Item<T> = { code: Code<T> };
+// ---> Item<T> は { code: number | string } と同じ
+
+interface Box<T> {
+    value: T
+}
+
+type BoxType<T extends Box<any>> = T extends Box<infer P> ? P : never;
+
+type A = Box<number>;
+
+type B = BoxType<A>;
