@@ -78,9 +78,9 @@ interface AddEventListenerOptions {
 }
 
 declare function addEventListener(
-    type: string,
-    handler: () => void,
-    options?: boolean | AddEventListenerOptions
+    arg1: string,
+    arg2: () => void,
+    arg3?: boolean | AddEventListenerOptions
 ): void;
 
 // addEventListener("foobar", () => {});
@@ -300,3 +300,90 @@ type BoxType<T extends Box<any>> = T extends Box<infer P> ? P : never;
 type A = Box<number>;
 
 type B = BoxType<A>;
+
+// 4-2
+function giveId(obj) {
+    const id = "uwagaki";
+    return {
+        ...obj,
+        id
+    }
+}
+
+const obj1 : {
+    foo: number;
+    id: string;
+} = giveId({ foo: 123 });
+
+const obj2 : {
+    foo: number;
+    id: string;
+} = giveId({
+    num: 0,
+    id: 100,
+});
+
+obj2.id = '';
+
+// Review
+// 1-3
+type IsPositiveFuncRev = (arg:number) => boolean;
+
+const isPositive3: IsPositiveFuncRev = num => num >= 0;
+isPositive3(5)
+
+function sumOfPosRev(arr:number[]): number {
+    return arr.filter(num => num >= 0).reduce((acc, num) => acc + num, 0)
+}
+
+// 2
+function myFilterRev<T>(arr:T[], predicate:(elm:T)=>boolean):T[] {
+    const result = []
+    for (const elm of arr) {
+        if (predicate(elm)) {
+            result.push(elm);
+        }
+    }
+    return result;
+}
+
+interface AddEventListenerOptionsRev{
+    capture?:boolean,
+    once?:boolean,
+    passive?:boolean,
+}
+
+declare function addEventListenerRev(
+    arg1: string,
+    arg2: ()=>{},
+    arg3?: boolean | AddEventListenerOptionsRev,
+):void;
+
+function mapFromArrayRev<T, K extends keyof T>(arr:T[], key:K): Map<T[K], T> {
+    const result = new Map();
+    for (const obj of arr) {
+        result.set(obj[key], obj);
+    }
+    return result;
+}
+
+type MyPartialRev<T> = {
+    [P in keyof T]?: T[P]
+}
+
+interface EventPayloadsRev {
+    start: {
+        user: string;
+    };
+    stop: {
+        user: string;
+        after: number;
+    };
+    end: {};
+}
+
+class EventDischargerRev<E> {
+    emit<Ev extends keyof E>(eventName: Ev, payload:E[Ev]) {
+        // promise
+    }
+}
